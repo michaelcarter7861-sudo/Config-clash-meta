@@ -8,6 +8,8 @@ on:
 jobs:
   build-config:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Yeh line repository mein write karne ki permission degi[span_1](start_span)[span_1](end_span)
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -24,7 +26,7 @@ jobs:
 
       - name: Run Config Generator Script
         env:
-          PROXY_SUB_URL: ${{ secrets.PROXY_SUB_URL }} # Agar koi secret subscription URL ho
+          PROXY_SUB_URL: ${{ secrets.PROXY_SUB_URL }}
         run: |
           python generate_config.py
 
