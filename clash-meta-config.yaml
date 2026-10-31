@@ -5,13 +5,12 @@ mode: rule
 log-level: info
 external-controller: 127.0.0.1:9090
 proxies:
-- name: Japan-Node-Free
-  type: vless
-  server: japan.example.com
+- name: Japan-Node-Fallback
+  type: ss
+  server: 1.1.1.1
   port: 443
-  uuid: your-uuid-here
-  network: ws
-  tls: true
+  cipher: aes-128-gcm
+  password: password
 proxy-groups:
 - name: Proxy
   type: select
@@ -20,7 +19,7 @@ proxy-groups:
 - name: Japan-Auto
   type: url-test
   proxies:
-  - Japan-Node-Free
+  - Japan-Node-Fallback
   url: http://www.gstatic.com/generate_204
   interval: 300
 rules:
