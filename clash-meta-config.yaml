@@ -6,26 +6,37 @@ log-level: info
 external-controller: 127.0.0.1:9090
 
 proxy-providers:
-  Japan-Free-Pool-1:
+  JP-Pool-1:
     type: http
-    url: "https://raw.githubusercontent.com/aiboboxx/clashfree/main/clash.yml"
-    interval: 3600
+    url: "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash"
+    interval: 1800
     path: ./jp_pool1.yaml
     filter: "(?i)jp|japan|🇯🇵|日本|tokyo|osaka"
     health-check:
       enable: true
-      interval: 300
+      interval: 60
       url: http://www.gstatic.com/generate_204
 
-  Japan-Free-Pool-2:
+  JP-Pool-2:
     type: http
-    url: "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash"
-    interval: 3600
+    url: "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml"
+    interval: 1800
     path: ./jp_pool2.yaml
     filter: "(?i)jp|japan|🇯🇵|日本|tokyo|osaka"
     health-check:
       enable: true
-      interval: 300
+      interval: 60
+      url: http://www.gstatic.com/generate_204
+
+  JP-Pool-3:
+    type: http
+    url: "https://raw.githubusercontent.com/anaer/Sub/main/clash.yaml"
+    interval: 1800
+    path: ./jp_pool3.yaml
+    filter: "(?i)jp|japan|🇯🇵|日本|tokyo|osaka"
+    health-check:
+      enable: true
+      interval: 60
       url: http://www.gstatic.com/generate_204
 
 proxy-groups:
@@ -33,21 +44,37 @@ proxy-groups:
     type: select
     proxies:
       - Japan-Auto
+      - Japan-Fallback
       - DIRECT
     use:
-      - Japan-Free-Pool-1
-      - Japan-Free-Pool-2
+      - JP-Pool-1
+      - JP-Pool-2
+      - JP-Pool-3
 
   - name: Japan-Auto
     type: url-test
     use:
-      - Japan-Free-Pool-1
-      - Japan-Free-Pool-2
+      - JP-Pool-1
+      - JP-Pool-2
+      - JP-Pool-3
     url: http://www.gstatic.com/generate_204
-    interval: 300
-    tolerance: 100
+    interval: 60
+    tolerance: 50
+    lazy: false
+
+  - name: Japan-Fallback
+    type: fallback
+    use:
+      - JP-Pool-1
+      - JP-Pool-2
+      - JP-Pool-3
+    url: http://www.gstatic.com/generate_204
+    interval: 60
+    lazy: false
 
 rules:
+  - DOMAIN,raw.githubusercontent.com,DIRECT
+  - DOMAIN-SUFFIX,github.com,DIRECT
   - DOMAIN-SUFFIX,co.jp,Proxy
   - GEOIP,JP,Proxy
   - MATCH,Proxy
